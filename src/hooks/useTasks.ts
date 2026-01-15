@@ -47,7 +47,9 @@ export function useTasks(): UseTasksState {
       const created = t.createdAt ? new Date(t.createdAt) : new Date(now - (idx + 1) * 24 * 3600 * 1000);
       const completed = t.completedAt || (t.status === 'Done' ? new Date(created.getTime() + 24 * 3600 * 1000).toISOString() : undefined);
       return {
-        id: t.id,
+        id: typeof t.id === 'string' && t.id.trim() !== ''
+          ? t.id
+          : crypto.randomUUID(),
         title: t.title,
         revenue: Number(t.revenue) ?? 0,
         timeTaken: Number(t.timeTaken) > 0 ? Number(t.timeTaken) : 1,
