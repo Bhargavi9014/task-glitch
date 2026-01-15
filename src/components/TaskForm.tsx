@@ -67,20 +67,23 @@ export default function TaskForm({ open, onClose, onSubmit, existingTitles, init
     !!priority &&
     !!status;
 
-  const handleSubmit = () => {
-    const safeTime = typeof timeTaken === 'number' && timeTaken > 0 ? timeTaken : 1; // auto-correct
-    const payload: Omit<Task, 'id'> & { id?: string } = {
-      title: title.trim(),
-      revenue: typeof revenue === 'number' ? revenue : 0,
-      timeTaken: safeTime,
-      priority: ((priority || 'Medium') as Priority),
-      status: ((status || 'Todo') as Status),
-      notes: notes.trim() || undefined,
-      ...(initial ? { id: initial.id } : {}),
+    const handleSubmit = () => {
+      const safeTime = typeof timeTaken === 'number' && timeTaken > 0 ? timeTaken : 1;
+      const payload: Omit<Task, 'id'> & { id?: string } = {
+        title: title.trim(),
+        revenue: typeof revenue === 'number' ? revenue : 0,
+        timeTaken: safeTime,
+        priority: (priority || 'Medium') as Priority,
+        status: (status || 'Todo') as Status,
+        notes: notes.trim() || undefined,
+        createdAt: initial?.createdAt ?? new Date().toISOString(),
+        ...(initial ? { id: initial.id } : {}),
+      };
+    
+      onSubmit(payload);
+      onClose();
     };
-    onSubmit(payload);
-    onClose();
-  };
+    
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -119,7 +122,7 @@ export default function TaskForm({ open, onClose, onSubmit, existingTitles, init
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <FormControl fullWidth required>
               <InputLabel id="priority-label">Priority</InputLabel>
-              <Select labelId="priority-label" label="Priority" value={priority} onChange={e => setPriority(e.target.value as Priority)}>
+              <Select labelId="priority-label" label="Priority" value={priority} onChange={(e) => setPriority(e.target.value as Priority)}>
                 {priorities.map(p => (
                   <MenuItem key={p} value={p}>{p}</MenuItem>
                 ))}

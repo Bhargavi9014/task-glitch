@@ -19,7 +19,7 @@ export default function TaskTable({ tasks, onAdd, onUpdate, onDelete }: Props) {
   const [editing, setEditing] = useState<Task | null>(null);
   const [details, setDetails] = useState<Task | null>(null);
 
-  const existingTitles = useMemo(() => tasks.map(t => t.title), [tasks]);
+  const existingTitles = useMemo(() => tasks.map(t => t.title ?? ''), [tasks]);
 
   const handleAddClick = () => {
     setEditing(null);
@@ -32,10 +32,10 @@ export default function TaskTable({ tasks, onAdd, onUpdate, onDelete }: Props) {
 
   const handleSubmit = (value: Omit<Task, 'id'> & { id?: string }) => {
     if (value.id) {
-      const { id, ...rest } = value as Task;
+      const { id, ...rest } = value;
       onUpdate(id, rest);
     } else {
-      onAdd(value as Omit<Task, 'id'>);
+      onAdd(value);
     }
   };
 
